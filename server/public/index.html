@@ -62,11 +62,7 @@
   <script>
     /* 没调用一次useSocket都会重新创建一个连接 */
     /* 可选择性进行优化 */
-    function useSocket (url) {
-      if (!url) {
-        console.error('使用 useSocket 需要传入相对应地址!!!')
-        return
-      }
+    function useSocket (url = '') {
       /* TODO: 需参考socket.io定义 */
       const socketInstanceDuck = {
         on: () => undefined,
@@ -97,7 +93,7 @@
     function useEventsTracking () {
       const events = Vue.reactive([])
 
-      const socket = useSocket('http://localhost:3000')
+      const socket = useSocket()
       Vue.watch(
         () => socket.connector,
         () => {
