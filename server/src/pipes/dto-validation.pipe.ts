@@ -6,7 +6,7 @@ import {
   Type,
 } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { validate } from 'class-validator';
+import { validate, ValidationError } from 'class-validator';
 
 @Injectable()
 export class DtoValidationPipe implements PipeTransform {
@@ -19,7 +19,8 @@ export class DtoValidationPipe implements PipeTransform {
 
     const errors = await validate(obj);
     if (errors.length > 0) {
-      throw new BadRequestException('Validation failed');
+      const errorMessage = this.getClassValidatorFirstErrorMessage(errors);
+      throw new BadRequestException(errorMessage);
     }
 
     return value;
@@ -28,5 +29,12 @@ export class DtoValidationPipe implements PipeTransform {
   toValidate(metatype: Type): boolean {
     const types: Type[] = [String, Boolean, Number, Array, Object];
     return !types.includes(metatype);
+  }
+
+  getClassValidatorFirstErrorMessage(errors: ValidationError[]): string {
+    const errorConstraints = errors[0].constraints;
+    const errorConstraintsKey = Object.keys(errorConstraints)[0];
+    const errorMessage = errorConstraints[errorConstraintsKey];
+    return errorMessage;
   }
 }
