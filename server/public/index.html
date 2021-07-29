@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <title>(oﾟvﾟ)ノ让我康康</title>
+  <!-- socket.io客户端 -->
+  <script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
+  <!-- Vue3 -->
+  <script src="https://unpkg.com/vue@next"></script>
+  <style>
+    #app {
+      margin: 0 auto;
+      width: 50vw;
+    }
+
+    table,
+    td {
+      border: 1px solid #333;
+    }
+
+    thead,
+    tfoot {
+      background-color: #333;
+      color: #fff;
+    }
+
+    table {
+      max-height: 50vh;
+      display: block;
+      overflow: scroll;
+    }
+    th {
+      min-width: 15vw;
+    }
+
+    .empty {
+      padding: 20px 0;
+      color: #d02525;
+
+      text-align: center;
+      font-weight: bold;
+    }
+
+    @media (max-width: 1400px) {
+      #app {
+        width: 100%;
+      }
+      th {
+        min-width: 30vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h2>( •̀ ω •́ )y 以下是小程序行为记录</h1>
+    <event-tracking></event-tracking>
+  </div>
+  <script>
+    /* 没调用一次useSocket都会重新创建一个连接 */
+    /* 可选择性进行优化 */
+    function useSocket (url) {
+      if (!url) {
+        console.error('使用 useSocket 需要传入相对应地址!!!')
+        return
+      }
+      /* TODO: 需参考socket.io定义 */
+      const socketInstanceDuck = {
+        on: () => undefined,
+        disconnect: () => undefined,
+      }
+
+      const socketContainer = Vue.reactive({
+        connector: socketInstanceDuck
+      })
+
+      const socket = io(
+        url,
+        { transport: ['websocket', 'polling' ]}
+      )
+      socket.on('connect', () => {
+        socketContainer.connector = socket
+      })
+      socket.on('disconnect', () => {
+        console.log(`socket连接已断开`)
+      })
+
+      Vue.onUnmounted(() => {
+        socketContainer.connector.disconnect(true)
+      })
+
+      return socketContainer
+    }
+    function useEventsTracking () {
+      const events = Vue.reactive([])
+
+      const socket = useSocket('http://localhost:3000')
+      Vue.watch(
+        () => socket.connector,
+        () => {
+          socket.connector.on('mini-event', data => {
+            events.push(data)
+          })
+        }
+      )
+      return events
+    }
+  </script>
+  <script>
+    const app = Vue.createApp({})
+
+    app.component('event-tracking', {
+      setup: () => {
+        const events = useEventsTracking()
+        return {
+          events
+        }
+      },
+      template: `
+        <table>
+          <thead>
+            <tr>
+              <th>小程序id</th>
+              <th>小程序行为</th>
+              <th>备注</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="events.length === 0">
+              <td class="empty" colspan="3">oops~ 当前没有数据</td>
+            </tr>
+            <template v-else>
+              <tr v-for="event in events">
+                <td>{{event.id}}</td>
+                <td>{{event.behavior}}</td>
+                <td>{{event.comments}}</td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      `,
+    })
+
+    app.mount('#app')
+  </script>
+</body>
+</html>
