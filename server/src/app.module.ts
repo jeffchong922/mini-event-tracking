@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { resolveFromRunRoot } from 'helpers/path';
+import { EventsModule } from './routers/events/events.module';
 import { SocketModule } from './socket/socket.module';
 
 @Module({
@@ -10,6 +11,7 @@ import { SocketModule } from './socket/socket.module';
       exclude: ['/api*'],
     }),
     SocketModule,
+    EventsModule,
   ],
 })
 export class AppModule {}
