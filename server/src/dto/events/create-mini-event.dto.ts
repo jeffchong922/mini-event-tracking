@@ -12,4 +12,10 @@ export class CreateMiniEventDto {
   @IsString()
   @IsOptional()
   comments: string;
+
+  constructor(id: string, behavior: string, comments: string = null) {
+    this.id = id;
+    this.behavior = behavior;
+    this.comments = comments;
+  }
 }
