@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
 import { Socket } from 'socket.io';
+import { EmitterEvents } from 'src/enums/emitter/emitter-events.enum';
 import { SocketEvents } from 'src/enums/socket/socket-events.enum';
+import { MiniEventEvent } from 'src/events/mini-event.event';
 import { MiniEvent } from 'src/interfaces/socket/mini-event.interface';
 
 @Injectable()
@@ -38,5 +41,10 @@ export class MiniEventService {
         clientItem.emit(SocketEvents.MiniEvent, message);
       });
     }
+  }
+
+  @OnEvent(EmitterEvents.MINI_EVENT)
+  handleMiniEvent(payload: MiniEventEvent) {
+    this.emitEvent(payload);
   }
 }
