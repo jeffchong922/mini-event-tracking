@@ -1,5 +1,7 @@
 /* eslint-disable no-shadow */
 /* eslint-disable import/no-commonjs */
+const path = require('path')
+const { promoteRelativePath } = require('@tarojs/helper')
 const { isFunctionComponent, isClassComponent } = require('./validator')
 
 /**
@@ -41,5 +43,15 @@ function getFilePath (p) {
   return p.hub.file.path
 }
 
+function getRelativePath (p, root = process.cwd()) {
+  return path.relative(root, p)
+}
+
+function getImportFileRelativePath (p, root) {
+  return promoteRelativePath(getRelativePath(p, root))
+}
+
 module.exports.getExportDefaultPath = getExportDefaultPath
 module.exports.getFilePath = getFilePath
+module.exports.getRelativePath = getRelativePath
+module.exports.getImportFileRelativePath = getImportFileRelativePath

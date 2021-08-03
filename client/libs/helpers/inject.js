@@ -1,8 +1,9 @@
 /* eslint-disable no-shadow */
 /* eslint-disable import/no-commonjs */
+const pathModule = require('path')
 const t = require('@babel/types')
 const template = require('@babel/template').default
-const { getFilePath } = require('./path')
+const { getFilePath, getImportFileRelativePath } = require('./path')
 
 const postEventMethodName = 'postEvent'
 
@@ -130,7 +131,9 @@ function injectEventTrackingImport (path) {
   })
 
   if (!isInjected) {
-    const importAst = template(`import { ${postEventMethodName} } from './helpers/event-tracking'`)()
+    const requestFilePath = pathModule.resolve(__dirname, '../../src/helpers/event-tracking')
+    const importPath = getImportFileRelativePath(requestFilePath, filePath.hub.file.opts.filename)
+    const importAst = template(`import { ${postEventMethodName} } from '${importPath}'`)()
     filePath.node.body.unshift(importAst)
   }
 }
