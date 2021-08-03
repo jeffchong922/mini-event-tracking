@@ -96,6 +96,48 @@ function injectHookMethod (p, name, event) {
 }
 
 /**
+ * @param {import('@babel/traverse').NodePath} p 组件声明path
+ * @param {{id: string; behavior: string; comments?: string}} event
+ */
+function injectUnmountHookMethod (p, event) {
+  injectEventTrackingImport(p)
+  injectReactHookImport(p, 'useEffect')
+
+  const execAst = execPostEventTemplate(event)()
+
+  p.traverse({
+    BlockStatement (p) {
+      p.node.body.unshift(
+        t.expressionStatement(
+          t.callExpression(
+            t.identifier('useEffect'),
+            [
+              t.arrowFunctionExpression(
+                [],
+                t.blockStatement(
+                  [
+                    t.returnStatement(
+                      t.arrowFunctionExpression(
+                        [],
+                        t.blockStatement([
+                          execAst
+                        ])
+                      )
+                    )
+                  ]
+                )
+              ),
+              t.arrayExpression([])
+            ]
+          )
+        )
+      )
+      p.stop()
+    }
+  })
+}
+
+/**
  * 判断当前path是否存在请求函数
  * @param {import('@babel/traverse').NodePath} path
  */
@@ -181,6 +223,47 @@ function injectTaroHookImport (path, name) {
 }
 
 /**
+ * @param {import('@babel/traverse').NodePath} path
+ * @param {string} name
+ */
+function injectReactHookImport (path, name) {
+  let isInjected = false
+
+  const filePath = getFilePath(path)
+
+  filePath.traverse({
+    ImportDeclaration (p) {
+      const sourcePath = p.get('source')
+      if (sourcePath.node.extra.rawValue === 'react') {
+        let isImported = false
+        p.traverse({
+          ImportSpecifier (p) {
+            if (p.node.imported.name === name) {
+              isImported = true
+              p.stop()
+            }
+          }
+        })
+        if (!isImported) {
+          p.node.specifiers.unshift(
+            t.importSpecifier(
+              t.identifier(name),
+              t.identifier(name),
+            )
+          )
+        }
+        p.stop()
+        isInjected = true
+      }
+    }
+  })
+  if (!isInjected) {
+    const importAst = template(`import { ${name} } from 'react'`)()
+    filePath.node.body.unshift(importAst)
+  }
+}
+
+/**
  * 替换直接返回值的箭头函数，添加一层block
  * @param {import('@babel/traverse').NodePath} bodyPath
  */
@@ -195,3 +278,4 @@ module.exports.injectEventTrackingMethod = injectEventTrackingMethod
 module.exports.injectClassMethod = injectClassMethod
 module.exports.replaceFunctionBodyNode = replaceFunctionBodyNode
 module.exports.injectHookMethod = injectHookMethod
+module.exports.injectUnmountHookMethod = injectUnmountHookMethod

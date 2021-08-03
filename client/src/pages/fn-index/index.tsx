@@ -3,7 +3,7 @@ import { navigateTo } from "@tarojs/taro";
 import { VFC } from "react";
 import { mainPages } from "../../app.pages";
 
-const FnIndex: VFC = () => {
+export default () => {
 
   function handleNavBtnClick () {
     navigateTo({
@@ -18,5 +18,3 @@ const FnIndex: VFC = () => {
     </View>
   )
 }
-
-export default FnIndex

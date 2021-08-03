@@ -7,6 +7,17 @@ function isAppEntry (state, config) {
   return filePathString === entryPathString
 }
 
+function isPageFile (state = {}, pages = new Set()) {
+  const filePathString = state.filename
+  let isPage = false
+  pages.forEach(page => {
+    if (page.path === filePathString) {
+      isPage = true
+    }
+  })
+  return isPage
+}
+
 /**
  * @param {import('@babel/traverse').NodePath} path
  */
@@ -22,3 +33,4 @@ module.exports.isClassComponent = function (path) {
 }
 
 module.exports.isAppEntry = isAppEntry
+module.exports.isPageFile = isPageFile

@@ -51,7 +51,24 @@ function getImportFileRelativePath (p, root) {
   return promoteRelativePath(getRelativePath(p, root))
 }
 
+/**
+ * @param {string} absPath
+ */
+function getPageName (absPath) {
+  let res = ''
+  res = path.basename(absPath).split('.')[0]
+  if (res === 'index') {
+    const dirNames = path.dirname(absPath).split(path.sep)
+    for(let i = dirNames.length - 1; i >= 0; i--) {
+      res = dirNames[i]
+      if (res !== 'index') break
+    }
+  }
+  return res
+}
+
 module.exports.getExportDefaultPath = getExportDefaultPath
 module.exports.getFilePath = getFilePath
 module.exports.getRelativePath = getRelativePath
 module.exports.getImportFileRelativePath = getImportFileRelativePath
+module.exports.getPageName = getPageName
