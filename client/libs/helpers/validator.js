@@ -18,7 +18,7 @@ module.exports.isFunctionComponent = function (path) {
  * @param {import('@babel/traverse').NodePath} path
  */
 module.exports.isClassComponent = function (path) {
-  return path.isClassDeclaration
+  return path.isClassDeclaration()
 }
 
 module.exports.isAppEntry = isAppEntry
