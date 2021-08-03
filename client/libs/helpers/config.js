@@ -12,12 +12,12 @@ const { CONFIG_DIR_NAME, DEFAULT_CONFIG_FILE } = require('@tarojs/service/dist/u
 
 const configRecord = {}
 
-module.exports.getWeAppConfig = function (appPath) {
+module.exports.getBuildConfig = function (appPath) {
   if (!appPath) throw new Error('缺少taro项目根路径')
 
   if (configRecord[appPath]) return configRecord[appPath]
 
-  console.log('初次调用getWeAppConfig')
+  console.log('初次调用getBuildConfig')
 
   const taroConfigPath = resolveScriptPath(path.join(appPath, CONFIG_DIR_NAME, DEFAULT_CONFIG_FILE))
   let initialConfig = {}

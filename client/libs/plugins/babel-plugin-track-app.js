@@ -2,7 +2,7 @@
 /* eslint-disable import/no-commonjs */
 const { declare } = require('@babel/helper-plugin-utils')
 const { isClassComponent, isFunctionComponent, isAppEntry } = require('../helpers/validator')
-const { getWeAppConfig } = require('../helpers/config')
+const { getBuildConfig } = require('../helpers/config')
 const { getExportDefaultPath } = require('../helpers/path')
 const { injectEventTrackingMethod, injectClassMethod, replaceFunctionBodyNode, injectHookMethod } = require('../helpers/inject')
 const { makeEvent } = require('../helpers/event')
@@ -13,7 +13,7 @@ const didHideEvent = makeEvent('taro', '小程序隐藏')
 module.exports = declare((api, { appPath = process.cwd() }) => {
   api.assertVersion(7)
 
-  const initConfig = getWeAppConfig(appPath)
+  const initConfig = getBuildConfig(appPath)
 
   return {
     visitor: {
