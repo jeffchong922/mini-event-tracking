@@ -163,6 +163,7 @@ function processFunctionComponent (p) {
                 injectEventTrackingMethod(p, willUnmountEvent)
                 isInjectedWillUnmount = true
               }
+              p.stop()
             }
           })
         }
