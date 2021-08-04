@@ -3,6 +3,9 @@ import { navigateTo, stopPullDownRefresh, usePullDownRefresh, useReachBottom } f
 import { useState, useEffect } from "react";
 import { mainPages } from "../../app.pages";
 
+/**
+ * @pageName 这是FnIndex
+ */
 export default () => {
   const [refreshTimer, setRefreshTimer] = useState<NodeJS.Timeout | null>(null)
 

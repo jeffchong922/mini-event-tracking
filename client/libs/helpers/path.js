@@ -3,6 +3,7 @@
 const path = require('path')
 const { promoteRelativePath } = require('@tarojs/helper')
 const { isFunctionComponent, isClassComponent } = require('./validator')
+const { getLeadingCommentPageName } = require('./docs')
 
 /**
  * @param {import('@babel/traverse').NodePath} p
@@ -61,6 +62,12 @@ function getExportDefaultPageName (p) {
   const filePath = getFilePath(p)
   filePath.traverse({
     ExportDefaultDeclaration (p) {
+      pageName = getLeadingCommentPageName(p)
+      if (pageName) {
+        p.stop()
+        return
+      }
+
       const declarationPath = p.get('declaration')
       if (isFunctionComponent(declarationPath)) {
         const idPath = declarationPath.get('id')
