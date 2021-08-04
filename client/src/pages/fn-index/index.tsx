@@ -1,5 +1,5 @@
 import { Button, View, Text } from "@tarojs/components";
-import { navigateTo, stopPullDownRefresh, usePullDownRefresh } from "@tarojs/taro";
+import { navigateTo, stopPullDownRefresh, usePullDownRefresh, useReachBottom } from "@tarojs/taro";
 import { useState, useEffect } from "react";
 import { mainPages } from "../../app.pages";
 
@@ -18,6 +18,10 @@ export default () => {
       refreshTimer && clearTimeout(refreshTimer)
     }
   }, [refreshTimer])
+
+  useReachBottom(() => {
+    console.log('触底')
+  })
 
   function handleNavBtnClick () {
     navigateTo({

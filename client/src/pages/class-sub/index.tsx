@@ -32,6 +32,10 @@ class ClassSub extends Component<{}, ClassSubState> {
     })
   }
 
+  onReachBottom () {
+    console.log('触底')
+  }
+
   onShareAppMessage () {
     return {
       title: '这是ClassSub的分享标题',
