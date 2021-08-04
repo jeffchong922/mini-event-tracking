@@ -1,9 +1,23 @@
 import { Button, View, Text } from "@tarojs/components";
-import { navigateTo } from "@tarojs/taro";
-import { VFC } from "react";
+import { navigateTo, stopPullDownRefresh, usePullDownRefresh } from "@tarojs/taro";
+import { useState, useEffect } from "react";
 import { mainPages } from "../../app.pages";
 
 export default () => {
+  const [refreshTimer, setRefreshTimer] = useState<NodeJS.Timeout | null>(null)
+
+  usePullDownRefresh(() => {
+    const timer = setTimeout(() => {
+      stopPullDownRefresh()
+    }, 2000);
+    setRefreshTimer(timer)
+  })
+
+  useEffect(() => {
+    return () => {
+      refreshTimer && clearTimeout(refreshTimer)
+    }
+  }, [refreshTimer])
 
   function handleNavBtnClick () {
     navigateTo({

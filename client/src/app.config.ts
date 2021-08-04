@@ -18,10 +18,11 @@ const appConfig: Config = {
     ],
   },
   window: {
-    backgroundTextStyle: 'light',
+    backgroundTextStyle: 'dark',
     navigationBarBackgroundColor: '#002966',
     navigationBarTitleText: 'Event Tracking',
     navigationBarTextStyle: 'white',
+    enablePullDownRefresh: true,
   }
 }
 
