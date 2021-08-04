@@ -1,9 +1,5 @@
 /* eslint-disable import/no-commonjs */
-const babelPluginTrackApp = require('./libs/plugins/babel-plugin-track-app')
-const babelPluginTrackPageShowHide = require('./libs/plugins/babel-plugin-track-page-show-hide')
-const babelPluginTrackShare = require('./libs/plugins/babel-plugin-track-share')
-const babelPluginTrackPullDownRefresh = require('./libs/plugins/babel-plugin-track-pull-down-refresh')
-const babelPluginTrackReachBottom = require('./libs/plugins/babel-plugin-track-reach-bottom')
+const babelPresetBaseTrack = require('./libs/presets/babel-preset-base-track')
 
 const trackPluginOptions = {
   appPath: __dirname
@@ -16,23 +12,9 @@ module.exports = {
     ['taro', {
       framework: 'react',
       ts: true
-    }]
+    }],
+    [
+      babelPresetBaseTrack, trackPluginOptions
+    ]
   ],
-  plugins: [
-    [
-      babelPluginTrackApp, trackPluginOptions
-    ],
-    [
-      babelPluginTrackPageShowHide, trackPluginOptions
-    ],
-    [
-      babelPluginTrackShare, trackPluginOptions
-    ],
-    [
-      babelPluginTrackPullDownRefresh, trackPluginOptions
-    ],
-    [
-      babelPluginTrackReachBottom, trackPluginOptions
-    ],
-  ]
 }
