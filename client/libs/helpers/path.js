@@ -52,6 +52,45 @@ function getImportFileRelativePath (p, root) {
 }
 
 /**
+ * @param {import('@babel/traverse').NodePath} p
+ * @returns {string}
+ */
+function getExportDefaultPageName (p) {
+  let pageName = ''
+
+  const filePath = getFilePath(p)
+  filePath.traverse({
+    ExportDefaultDeclaration (p) {
+      const declarationPath = p.get('declaration')
+      if (isFunctionComponent(declarationPath)) {
+        const idPath = declarationPath.get('id')
+        if (idPath.isIdentifier()) {
+          pageName = idPath.node.name
+        }
+      }
+      if (isClassComponent(declarationPath)) {
+        const idPath = declarationPath.get('id')
+        if (idPath.isIdentifier()) {
+          pageName = idPath.node.name
+        }
+      }
+      if (declarationPath.isIdentifier()) {
+        const namePath = declarationPath.get('name')
+        pageName = namePath.node
+      }
+      p.stop()
+    }
+  })
+
+  if (!pageName) {
+    const fileAbsPath = filePath.hub.file.opts.filename
+    pageName = getPageName(fileAbsPath)
+  }
+
+  return pageName
+}
+
+/**
  * @param {string} absPath
  */
 function getPageName (absPath) {
@@ -72,3 +111,4 @@ module.exports.getFilePath = getFilePath
 module.exports.getRelativePath = getRelativePath
 module.exports.getImportFileRelativePath = getImportFileRelativePath
 module.exports.getPageName = getPageName
+module.exports.getExportDefaultPageName = getExportDefaultPageName

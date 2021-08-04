@@ -3,7 +3,7 @@
 const { declare } = require('@babel/helper-plugin-utils')
 const { isClassComponent, isFunctionComponent, isPageFile } = require('../helpers/validator')
 const { getPages } = require('../helpers/config')
-const { getExportDefaultPath, getFilePath, getPageName } = require('../helpers/path')
+const { getExportDefaultPath, getExportDefaultPageName } = require('../helpers/path')
 const {
   injectEventTrackingMethod,
   injectClassMethod,
@@ -41,37 +41,7 @@ module.exports = declare((api, { appPath = process.cwd() }) => {
  * @param {import('@babel/traverse').NodePath} p
  */
 function processReplaceEvent (p) {
-  const filePath = getFilePath(p)
-
-  let pageName = ''
-
-  filePath.traverse({
-    ExportDefaultDeclaration (p) {
-      const declarationPath = p.get('declaration')
-      if (isFunctionComponent(declarationPath)) {
-        const idPath = declarationPath.get('id')
-        if (idPath.isIdentifier()) {
-          pageName = idPath.node.name
-        }
-      }
-      if (isClassComponent(declarationPath)) {
-        const idPath = declarationPath.get('id')
-        if (idPath.isIdentifier()) {
-          pageName = idPath.node.name
-        }
-      }
-      if (declarationPath.isIdentifier()) {
-        const namePath = declarationPath.get('name')
-        pageName = namePath.node
-      }
-      p.stop()
-    }
-  })
-
-  if (!pageName) {
-    const fileAbsPath = filePath.hub.file.opts.filename
-    pageName = getPageName(fileAbsPath)
-  }
+  const pageName = getExportDefaultPageName(p)
 
   didShowEvent.behavior = `${pageName}页面显示`
   didHideEvent.behavior = `${pageName}页面隐藏`
