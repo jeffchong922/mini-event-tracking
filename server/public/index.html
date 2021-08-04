@@ -28,7 +28,7 @@
     }
 
     table {
-      max-height: 50vh;
+      max-height: 70vh;
       display: block;
       overflow: scroll;
     }
@@ -111,13 +111,26 @@
     app.component('event-tracking', {
       setup: () => {
         const events = useEventsTracking()
+
+        const tableRef = Vue.ref(null)
+
+        Vue.onUpdated(() => {
+          const tableEl = tableRef.value
+          tableEl.scrollTo({
+            top: tableEl.scrollHeight,
+            left: 0,
+            behavior: 'smooth',
+          })
+        })
+
         return {
-          events
+          events,
+          tableRef
         }
       },
       template: `
-        <table>
-          <thead>
+        <table ref="tableRef">
+          <thead v-once>
             <tr>
               <th>小程序id</th>
               <th>小程序行为</th>
