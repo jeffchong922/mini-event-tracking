@@ -5,6 +5,10 @@ const babelPluginTrackShare = require('./libs/plugins/babel-plugin-track-share')
 const babelPluginTrackPullDownRefresh = require('./libs/plugins/babel-plugin-track-pull-down-refresh')
 const babelPluginTrackReachBottom = require('./libs/plugins/babel-plugin-track-reach-bottom')
 
+const trackPluginOptions = {
+  appPath: __dirname
+}
+
 // babel-preset-taro 更多选项和默认值：
 // https://github.com/NervJS/taro/blob/next/packages/babel-preset-taro/README.md
 module.exports = {
@@ -16,19 +20,19 @@ module.exports = {
   ],
   plugins: [
     [
-      babelPluginTrackApp, { appPath: __dirname }
+      babelPluginTrackApp, trackPluginOptions
     ],
     [
-      babelPluginTrackPageShowHide, { appPath: __dirname }
+      babelPluginTrackPageShowHide, trackPluginOptions
     ],
     [
-      babelPluginTrackShare, { appPath: __dirname }
+      babelPluginTrackShare, trackPluginOptions
     ],
     [
-      babelPluginTrackPullDownRefresh, { appPath: __dirname }
+      babelPluginTrackPullDownRefresh, trackPluginOptions
     ],
     [
-      babelPluginTrackReachBottom, { appPath: __dirname }
+      babelPluginTrackReachBottom, trackPluginOptions
     ],
   ]
 }
