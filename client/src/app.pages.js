@@ -15,10 +15,7 @@ function getMainPagesOption () {
 }
 
 function deleteFirstSlash (s) {
-  const isNeedReplace = s[0] === '/'
-  return isNeedReplace
-    ? s.substr(1)
-    : s
+  return s.replace(/^\//, '')
 }
 
 module.exports = {
